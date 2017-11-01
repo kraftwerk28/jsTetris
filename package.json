@@ -1,0 +1,29 @@
+{
+  "name": "jstetris",
+  "version": "1.0.0",
+  "description": "a JavaScript classic Tetris game",
+  "main": "figureScript.js",
+  "dependencies": {
+    "array-grid": "^1.5.0"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kraftwerk28/jsTetris.git"
+  },
+  "author": "kraftwerk28",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kraftwerk28/jsTetris/issues"
+  },
+  "homepage": "https://github.com/kraftwerk28/jsTetris#readme"
+}
