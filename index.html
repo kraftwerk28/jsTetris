@@ -2,19 +2,31 @@
 <html lang="en">
 
 <head>
+    <style>
+        #canvas-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        canvas {
+            display: inline;
+        }
+    </style>
+
     <meta name="theme-color" content="#77ffff">
 </head>
 
 <body>
 
 </body>
-<div>
+<div id="canvas-container">
     <canvas id="canv" width="200" height="400"></canvas>
 </div>
 <p id="cnter">mxn</p>
 
 <script src="gameScript.js"></script>
 <script src="figureScript.js"></script>
+<script src="allGrids.js"></script>
 <script>
     let mxn = document.getElementById('cnter');
 </script>

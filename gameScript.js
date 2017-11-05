@@ -6,33 +6,31 @@ let curFigure;
 let gs = 20;
 let ts = 18;
 
+let isPause = true;
+let pauseVar;
+
 let grid = new Array(20);
 for (let i = 0; i < 20; i++) {
   grid[i] = new Array(10);
 }
 for (let y = 0; y < grid.length; y++)
   for (let x = 0; x < grid[0].length; x++)
-    grid[x][y] = 0;
+    grid[y][x] = 0;
+
 
 window.onload = () => {
   canvas = document.getElementById('canv');
   ctx = canvas.getContext('2d');
-  setInterval(Game, 200);
+  pauseVar = setInterval(Game, 200);
   document.addEventListener('keydown', keyDown);
-  curFigure = new Figure(1, 1);
-}
+  createFigure();
+};
 
 const Game = () => {
   checkCol();
-  while (curFigure.position.x < 0)
-    curFigure.mvRight();
-  // while(curFigure.position.x<0)
-  // curFigure.mvRight();
   curFigure.mvDown();
-
-
   Redraw();
-}
+};
 
 const Redraw = () => {
   ctx.fillStyle = 'black';
@@ -40,9 +38,9 @@ const Redraw = () => {
 
   let x = 0;
   let y = 0;
-  for (x = 0; x < 10; x++) {
-    for (y = 0; y < 20; y++) {
-      switch (grid[x][y]) {
+  for (y = 0; y < grid.length; y++) {
+    for (x = 0; x < grid[y].length; x++) {
+      switch (grid[y][x]) {
         case 1:
           ctx.fillStyle = 'red';
           break;
@@ -56,9 +54,12 @@ const Redraw = () => {
           ctx.fillStyle = 'lime';
           break;
         case 5:
-          ctx.fillStyle = 'blue';
+          ctx.fillStyle = 'cyan';
           break;
         case 6:
+          ctx.fillStyle = 'blue';
+          break;
+        case 7:
           ctx.fillStyle = 'violet';
           break;
         default:
@@ -82,9 +83,12 @@ const Redraw = () => {
       ctx.fillStyle = 'lime';
       break;
     case 4:
-      ctx.fillStyle = 'blue';
+      ctx.fillStyle = 'cyan';
       break;
     case 5:
+      ctx.fillStyle = 'blue';
+      break;
+    case 6:
       ctx.fillStyle = 'violet';
       break;
     default:
@@ -97,22 +101,25 @@ const Redraw = () => {
         ctx.fillRect(curFigure.position.x * gs + x * gs, curFigure.position.y * gs + y * gs, ts, ts);
     }
   }
-
-  mxn.innerHTML = curFigure.fGrid[0].length + ' ' + curFigure.fGrid.length;
-}
+  mxn.innerHTML = curFigure.fGrid[0].length + ' ' + curFigure.fGrid.length + ' ' + curFigure.fType;
+};
 
 const Bake = () => {
   let x = 0;
   let y = 0;
-  for (x = 0; x < curFigure.fGrid[0].length; x++) {
-    for (y = 0; y < curFigure.fGrid.length; y++) {
+  for (y = 0; y < curFigure.fGrid.length; y++) {
+    for (x = 0; x < curFigure.fGrid[0].length; x++) {
       if (curFigure.fGrid[y][x] !== 0)
-        grid[curFigure.position.x + x][curFigure.position.y + y] = curFigure.fGrid[y][x];
+        // grid[curFigure.position.y + y][curFigure.position.x + x] = curFigure.fGrid[y][x];
+        grid[curFigure.position.y + y][curFigure.position.x + x] = curFigure.fGrid[y][x];
     }
   }
-  curFigure = new Figure(Math.floor(Math.random() * 4), Math.floor(Math.random() * 2));
-  // destroyRaw();
-}
+  destroyRaw();
+  clearInterval(pauseVar);
+  pauseVar = setInterval(Game, 200);
+  createFigure();
+  // console.log(grid[0]);
+};
 
 const checkCol = () => {
   let x = 0;
@@ -120,19 +127,67 @@ const checkCol = () => {
   for (x = 0; x < curFigure.fGrid[0].length; x++) {
     for (y = 0; y < curFigure.fGrid.length; y++) {
       try {
-        if (grid[curFigure.position.x + x][curFigure.position.y + y + 1] !== 0 && curFigure.fGrid[y][x] !== 0) {
-          // console.log(grid[curFigure.position.x + x][curFigure.position.y + y] + '!!!');
+        if (grid[curFigure.position.y + y + 1][curFigure.position.x + x] !== 0 && curFigure.fGrid[y][x] !== 0) {
           Bake();
           break;
         }
       } catch (error) {
-        while (curFigure.position.x < 0)
-          curFigure.mvRight();
-        while (curFigure.position.x > grid[0].length - curFigure[0].length - 10)
-          curFigure.mvLeft();
+        Bake();
+        break;
       }
     }
   }
+};
+
+const checkSides = (side) => {
+  let canMove = true;
+  let x = 0;
+  let y = 0;
+  let s = 0;
+
+  if (side === 'right')
+    s = 1;
+  else if (side === 'left')
+    s = -1;
+
+  for (x = 0; x < curFigure.fGrid[0].length; x++) {
+    for (y = 0; y < curFigure.fGrid.length; y++) {
+      try {
+        if (grid[curFigure.position.y + y][curFigure.position.x + x + s] !== 0 && curFigure.fGrid[y][x] !== 0) {
+          canMove = false;
+          break;
+        }
+      } catch (error) {
+        canMove = false;
+        break;
+      }
+    }
+  }
+  return canMove;
+};
+
+const checkRotation = () => {
+  let canRotate = true;
+  let x = 0;
+  let y = 0;
+
+  let testGrid = curFigure.rotated();
+  for (x = 0; x < testGrid[0].length; x++) {
+    for (y = 0; y < testGrid.length; y++) {
+      try {
+        if (grid[curFigure.position.y + y][curFigure.position.x + x] !== 0 && testGrid[y][x] !== 0) {
+          canRotate = false;
+          break;
+        }
+      } catch (error) {
+        canRotate = false;
+        break;
+      }
+    }
+  }
+
+  // if (checkSides)
+  return canRotate;
 }
 
 const destroyRaw = () => {
@@ -145,12 +200,46 @@ const destroyRaw = () => {
         c++;
       }
     }
-    if (cell >= 8) {
-      grid.splice(raw, 1);
-    }
     console.log(c);
+    if (c >= 10) {
+      // playDestroyAnim(raw);
+      grid.splice(raw, 1);
+      grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+      raw++;
+    }
     c = 0;
+  }
+}
 
+const playDestroyAnim = (raw) => {
+
+  let i = 4;
+  const a = () => {
+    if (i >= 0) {
+      i--;
+      ctx.fillStyle = 'black';
+      ctx.fillRect(i * gs, raw * gs, ts, ts);
+      ctx.fillRect(((grid[0].length - 1) - i) * gs, raw * gs, ts, ts);
+    }
+    else {
+      pause();
+      clearInterval(anm);
+    }
+  };
+  pause();
+  let anm = setInterval(a, 100);
+
+}
+
+const pause = () => {
+  isPause = !isPause;
+  if (isPause) {
+    pauseVar = setInterval(Game, 200);
+    document.addEventListener('keydown', keyDown);
+  }
+  else {
+    clearInterval(pauseVar);
+    document.removeEventListener('keydown', keyDown);
   }
 }
 
@@ -169,8 +258,16 @@ const keyDown = (e) => {
       curFigure.mvRight();
       Redraw();
       break;
+    case 40:
+    case 83:
+      clearInterval(pauseVar);
+      pauseVar = setInterval(Game, 20);
+      break;
     case 66:
       Bake();
+      break;
+    case 80:
+      pause();
       break;
   }
 }
