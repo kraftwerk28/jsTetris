@@ -2,36 +2,53 @@
 
 let canvas;
 let ctx;
-let curFigure;
-let gs = 20;
-let ts = 18;
 
-let isPause = true;
+let smallCanvas;
+let smallctx;
+
+let curFigure;
+let nxtf;
+let nextType = 0;
+const gs = 20;
+const ts = 18;
+
+let isPause = false;
 let pauseVar;
 
-let grid = new Array(20);
+// init grid
+const grid = new Array(20);
 for (let i = 0; i < 20; i++) {
   grid[i] = new Array(10);
 }
-for (let y = 0; y < grid.length; y++)
-  for (let x = 0; x < grid[0].length; x++)
-    grid[y][x] = 0;
+grid.forEach(function (item, i, grid) {
+  let j;
+  for (j = 0; j < grid[i].length; j++) {
+    grid[i][j] = 0;
+  }
+}, this);
 
-
+// init window
 window.onload = () => {
   canvas = document.getElementById('canv');
   ctx = canvas.getContext('2d');
+
+  smallCanvas = document.getElementById('next-figure');
+  smallctx = smallCanvas.getContext('2d');
+
   pauseVar = setInterval(Game, 200);
   document.addEventListener('keydown', keyDown);
+  nextType = Math.floor(Math.random() * allGrids.length);
   createFigure();
 };
 
+// main-clock timed void
 const Game = () => {
   checkCol();
   curFigure.mvDown();
   Redraw();
 };
 
+// redraw all grid & figure
 const Redraw = () => {
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -69,6 +86,7 @@ const Redraw = () => {
       ctx.fillRect(x * gs, y * gs, ts, ts);
     }
   }
+
   switch (curFigure.fType) {
     case 0:
       ctx.fillStyle = 'red';
@@ -104,6 +122,50 @@ const Redraw = () => {
   mxn.innerHTML = curFigure.fGrid[0].length + ' ' + curFigure.fGrid.length + ' ' + curFigure.fType;
 };
 
+// redraw next-figure canvas
+const RedrawNext = () => {
+  nxtf = new Figure(nextType, 0);
+  nxtf.position.x = 1;
+  nxtf.position.y = 1;
+  smallctx.fillStyle = 'black';
+  smallctx.fillRect(0, 0, smallCanvas.width, smallCanvas.height);
+  switch (nxtf.fType) {
+    case 0:
+      smallctx.fillStyle = 'red';
+      break;
+    case 1:
+      smallctx.fillStyle = 'orange';
+      break;
+    case 2:
+      ctsmallctxx.fillStyle = 'yellow';
+      break;
+    case 3:
+      smallctx.fillStyle = 'lime';
+      break;
+    case 4:
+      smallctx.fillStyle = 'cyan';
+      break;
+    case 5:
+      smallctx.fillStyle = 'blue';
+      break;
+    case 6:
+      smallctx.fillStyle = 'violet';
+      break;
+    default:
+      smallctx.fillStyle = 'black';
+      break;
+  }
+  console.log(nxtf);
+  let x = 0;
+  let y = 0;
+  for (x = 0; x < nxtf.fGrid[0].length; x++) {
+    for (y = 0; y < nxtf.fGrid.length; y++) {
+      if (nxtf.fGrid[y][x] != 0)
+        smallctx.fillRect(nxtf.position.x * gs + x * gs, nxtf.position.y * gs + y * gs, ts, ts);
+    }
+  }
+}
+
 const Bake = () => {
   let x = 0;
   let y = 0;
@@ -116,11 +178,13 @@ const Bake = () => {
   }
   destroyRaw();
   clearInterval(pauseVar);
-  pauseVar = setInterval(Game, 200);
+  pauseVar = setInterval(Game, 300);
+  checkLose();
   createFigure();
-  // console.log(grid[0]);
+
 };
 
+// calculating collisions
 const checkCol = () => {
   let x = 0;
   let y = 0;
@@ -139,6 +203,7 @@ const checkCol = () => {
   }
 };
 
+// ...
 const checkSides = (side) => {
   let canMove = true;
   let x = 0;
@@ -166,6 +231,7 @@ const checkSides = (side) => {
   return canMove;
 };
 
+// ...
 const checkRotation = () => {
   let canRotate = true;
   let x = 0;
@@ -190,6 +256,16 @@ const checkRotation = () => {
   return canRotate;
 }
 
+const checkLose = () => {
+  grid[0].forEach(function (element) {
+    if (element !== 0) {
+      setTimeout(function () {
+        location.reload();
+      }, 2000);
+    }
+  }, this);
+}
+
 const destroyRaw = () => {
   let raw = 0;
   let cell = 0;
@@ -212,7 +288,6 @@ const destroyRaw = () => {
 }
 
 const playDestroyAnim = (raw) => {
-
   let i = 4;
   const a = () => {
     if (i >= 0) {
@@ -232,7 +307,6 @@ const playDestroyAnim = (raw) => {
 }
 
 const pause = () => {
-  isPause = !isPause;
   if (isPause) {
     pauseVar = setInterval(Game, 200);
     document.addEventListener('keydown', keyDown);
@@ -241,33 +315,48 @@ const pause = () => {
     clearInterval(pauseVar);
     document.removeEventListener('keydown', keyDown);
   }
+  console.log(isPause);
+  isPause = !isPause;
 }
 
+// keyDown event void
 const keyDown = (e) => {
   switch (e.keyCode) {
-    case 32:
+    case 32: //space
       curFigure.rotate();
       break;
-    case 37:
+
+    case 37: // arrow left
     case 65:
       curFigure.mvLeft();
       Redraw();
       break;
-    case 39:
+
+    case 39: // arrow right
     case 68:
       curFigure.mvRight();
       Redraw();
       break;
-    case 40:
+
+    case 40: // arrow down
     case 83:
       clearInterval(pauseVar);
       pauseVar = setInterval(Game, 20);
       break;
-    case 66:
+
+    case 38: // arrow up
+    case 87:
+      curFigure.rotate();
+      break;
+
+
+    case 66: // B
       Bake();
       break;
-    case 80:
+
+    case 80: // P
       pause();
       break;
+
   }
 }

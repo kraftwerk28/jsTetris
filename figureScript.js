@@ -1,10 +1,15 @@
 'use strict';
 
+
 const createFigure = () => {
-  let type = Math.floor(Math.random() * allGrids.length);
-  curFigure = new Figure(type, Math.floor(Math.random() * allGrids[type].length));
+  // let type = Math.floor(Math.random() * allGrids.length);
+  curFigure = new Figure(nextType, Math.floor(Math.random() * allGrids[nextType].length));
+  // curFigure = new Figure(nextType, Math.floor(Math.random() * allGrids[type].length));
+  nextType = Math.floor(Math.random() * allGrids[nextType].length);
+  RedrawNext();
 }
 
+// main figure constructor
 const Figure = function (type, rot) {
   this.fGrid = allGrids[type][rot];
   this.fType = type;
