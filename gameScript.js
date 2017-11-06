@@ -137,7 +137,7 @@ const RedrawNext = () => {
       smallctx.fillStyle = 'orange';
       break;
     case 2:
-      ctsmallctxx.fillStyle = 'yellow';
+      smallctx.fillStyle = 'yellow';
       break;
     case 3:
       smallctx.fillStyle = 'lime';
@@ -276,12 +276,16 @@ const destroyRaw = () => {
         c++;
       }
     }
-    console.log(c);
+
+
     if (c >= 10) {
       // playDestroyAnim(raw);
+      clearInterval(pauseVar);
       grid.splice(raw, 1);
       grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       raw++;
+      sleep(100);
+      // raw++;
     }
     c = 0;
   }
@@ -359,4 +363,9 @@ const keyDown = (e) => {
       break;
 
   }
+}
+
+const sleep = (milliseconds) => {
+  let now = new Date().getTime();
+  while (new Date().getTime() - now < milliseconds) { }
 }
