@@ -5,7 +5,7 @@ const createFigure = () => {
   // let type = Math.floor(Math.random() * allGrids.length);
   curFigure = new Figure(nextType, Math.floor(Math.random() * allGrids[nextType].length));
   // curFigure = new Figure(nextType, Math.floor(Math.random() * allGrids[type].length));
-  nextType = Math.floor(Math.random() * allGrids[nextType].length);
+  nextType = Math.floor(Math.random() * allGrids.length);
   RedrawNext();
 }
 
