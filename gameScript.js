@@ -263,7 +263,7 @@ const checkLose = () => {
     if (element !== 0) {
       setTimeout(function () {
         location.reload();
-      }, 2000);
+      }, 1000);
     }
   }, this);
 }
