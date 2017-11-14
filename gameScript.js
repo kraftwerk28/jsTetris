@@ -1,16 +1,16 @@
 'use strict';
 
-let canvas;
-let ctx;
+const canvas = document.getElementById('canv');;
+const ctx = canvas.getContext('2d');
 
-let smallCanvas;
-let smallctx;
+const smallCanvas = document.getElementById('next-figure');
+const smallctx = smallCanvas.getContext('2d');
 
 let curFigure;
 let nxtf;
 let nextType = 0;
-const gs = 20;
-const ts = 18;
+const gs = 20; // cell size
+const ts = 18; // tile size
 
 let isPause = false;
 let pauseVar;
@@ -31,12 +31,6 @@ grid.forEach(function (item, i, grid) {
 
 // init window
 window.onload = () => {
-  canvas = document.getElementById('canv');
-  ctx = canvas.getContext('2d');
-
-  smallCanvas = document.getElementById('next-figure');
-  smallctx = smallCanvas.getContext('2d');
-
   pauseVar = setInterval(Game, 200);
   document.addEventListener('keydown', keyDown);
   nextType = Math.floor(Math.random() * allGrids.length);
