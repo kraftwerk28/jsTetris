@@ -10,7 +10,7 @@ let curFigure;
 let nxtf;
 let nextType = 0;
 const gs = 20;
-const ts = 20;
+const ts = 18;
 
 let isPause = false;
 let pauseVar;
