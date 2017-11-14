@@ -23,20 +23,24 @@
 </head>
 
 <body>
+    <div id="score" style="text-align: center; font-size: 300%;">SCORE: 0</div>
+    <div id="canvas-container">
+        <canvas id="canv" width="200" height="400"></canvas>
+        <canvas id="next-figure" width="100" height="100"></canvas>
+    </div>
+    <p id="cnter">mxn</p>
+    <div style="position: absolute; left: 850px; top: 200px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <p>CONTROLS:</p>
+        <p>[arrow left] / [A] - move left</p>
+        <p>[arrow right] / [D] - move right</p>
+        <p>[arrow down] / [S] - move down instantly</p>
+        <p>[arrow up] / [SPACE] / [W] - rotate</p>
+        <p>[F5] - reload game</p>
+    </div>
 
+    <script src="gameScript.js"></script>
+    <script src="figureScript.js"></script>
+    <script src="allGrids.js"></script>
 </body>
-<div id="canvas-container">
-    <canvas id="canv" width="200" height="400"></canvas>
-    <canvas id="next-figure" width="100" height="100"></canvas>
-
-</div>
-<p id="cnter">mxn</p>
-
-<script src="gameScript.js"></script>
-<script src="figureScript.js"></script>
-<script src="allGrids.js"></script>
-<script>
-    let mxn = document.getElementById('cnter');
-</script>
 
 </html>

@@ -10,10 +10,12 @@ let curFigure;
 let nxtf;
 let nextType = 0;
 const gs = 20;
-const ts = 18;
+const ts = 20;
 
 let isPause = false;
 let pauseVar;
+
+let score = 0;
 
 // init grid
 const grid = new Array(20);
@@ -277,15 +279,14 @@ const destroyRaw = () => {
       }
     }
 
-
     if (c >= 10) {
+      score += 100;
+      document.getElementById('score').innerHTML = 'SCORE: ' + score;
       // playDestroyAnim(raw);
       clearInterval(pauseVar);
       grid.splice(raw, 1);
       grid.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
       raw++;
-      sleep(100);
-      // raw++;
     }
     c = 0;
   }
